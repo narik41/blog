@@ -19,8 +19,6 @@ public class UserServiceImp implements  UserService, UserDetailsService {
     @Autowired
     private UserRepostitory userRepostitory;
 
-
-
     @Override
     public UserDetails loadUserByUsername(String username){
         User user = userRepostitory.findByEmail(username);
