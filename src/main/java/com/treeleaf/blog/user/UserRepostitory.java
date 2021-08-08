@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepostitory extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
+
+    ProfileView findAllProjectedByEmail(String email);
 }

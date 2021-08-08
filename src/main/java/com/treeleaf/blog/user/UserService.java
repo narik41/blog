@@ -5,5 +5,10 @@ import org.springframework.stereotype.Service;
 
 public interface UserService {
 
-    public UserDetails loadUserByUsername(String username);
+    /**
+     * Get the user profile details
+     *
+     * @return
+     */
+    public ProfileView profile();
 }
