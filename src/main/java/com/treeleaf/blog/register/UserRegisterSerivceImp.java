@@ -2,6 +2,8 @@ package com.treeleaf.blog.register;
 
 import com.treeleaf.blog.exception.UserAlreadyExistException;
 import com.treeleaf.blog.exception.UserRegisterStoredException;
+import com.treeleaf.blog.role.Role;
+import com.treeleaf.blog.role.RoleRepository;
 import com.treeleaf.blog.user.User;
 import com.treeleaf.blog.user.UserRepostitory;
 import com.treeleaf.blog.userprofile.UserProfile;
@@ -14,6 +16,9 @@ public class UserRegisterSerivceImp implements  UserRegisterSerivce {
 
     @Autowired
     private UserRepostitory userRepostitory;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     /**
      * Check if email already exists or not

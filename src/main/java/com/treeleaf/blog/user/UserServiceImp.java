@@ -1,5 +1,6 @@
 package com.treeleaf.blog.user;
 
+import com.treeleaf.blog.util.LoggedinUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,17 @@ public class UserServiceImp implements  UserService, UserDetailsService {
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        //user.getRoles().forEach()
+        user.getRoles().forEach(role->{
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    }
+
+
+    @Override
+    public ProfileView profile() {
+        String email = LoggedinUser.getUsername();
+        return  userRepostitory.findAllProjectedByEmail(email);
     }
 }

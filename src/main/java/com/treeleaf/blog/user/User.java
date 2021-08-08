@@ -1,8 +1,9 @@
 package com.treeleaf.blog.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.treeleaf.blog.role.Role;
 import com.treeleaf.blog.userprofile.UserProfile;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -34,8 +36,18 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt ;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     @JsonIgnore
     private UserProfile profile;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    @JsonIgnore
+    private Collection<Role> roles;
 }
