@@ -67,6 +67,20 @@ public class CommentServiceImp implements  CommentService {
         }catch(Exception e){
             throw  new InternalServerErrorException("Internal error. We are working actively to fix the error");
         }
+    }
+
+    @Override
+    public void delete(Long commentId, Long postId) {
+        Comment comment = findByIdAndPostId(commentId, postId);
+        if(comment.getUser().getId() != 1){
+            throw new UserAuthorizationException("You are not authorized to update the comment.");
+        }
+
+        try{
+            commentRepository.delete(comment);
+        }catch(Exception e){
+            throw  new InternalServerErrorException("Internal error. We are working actively to fix the error");
+        }
 
     }
 }

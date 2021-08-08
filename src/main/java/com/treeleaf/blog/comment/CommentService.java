@@ -2,6 +2,7 @@ package com.treeleaf.blog.comment;
 
 public interface CommentService {
 
+
     /**
      * Check if post exists and store the comment details
      *
@@ -17,4 +18,11 @@ public interface CommentService {
      * @param request
      */
     public void update(Long commentId, Long postId, CommentRequest request);
+
+    /**
+     * Remove the comment details from the record
+     *
+     * @param commentId
+     */
+    public void delete(Long commentId, Long postId);
 }
