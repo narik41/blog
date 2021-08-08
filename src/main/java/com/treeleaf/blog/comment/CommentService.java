@@ -9,4 +9,12 @@ public interface CommentService {
      * @param request
      */
     public void store(Long postId, CommentRequest request);
+
+    /**
+     * Update the comment details
+     *
+     * @param commentId
+     * @param request
+     */
+    public void update(Long commentId, Long postId, CommentRequest request);
 }
