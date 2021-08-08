@@ -18,6 +18,11 @@ public class PostServiceImp implements  PostService {
     UserRepostitory userRepostitory;
 
     @Override
+    public Post getPostDetails(Long id) {
+        return postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
+    }
+
+    @Override
     public void store(PostRequest request){
 
         try{

@@ -3,6 +3,14 @@ package com.treeleaf.blog.post;
 public interface PostService {
 
     /**
+     * Get the post details
+     *
+     * @param id
+     * @return
+     */
+    public Post getPostDetails(Long id);
+
+    /**
      * Store the details of post
      *
      * @param request

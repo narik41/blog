@@ -15,12 +15,20 @@ public class PostController {
     @Autowired
     PostService postService;
 
+    @GetMapping("/post/{id}")
+    public ResponseEntity<Post> view(@PathVariable("id") Long id){
+        Post post = postService.getPostDetails(id);
+
+        return new ResponseEntity(post, HttpStatus.OK);
+    }
+
     @PostMapping("post")
     public ResponseEntity<String> store(@Valid PostRequest request){
         postService.store(request);
 
         return new ResponseEntity("Post stored successfully.", HttpStatus.CREATED);
     }
+
     @PutMapping("/post/{id}")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @Valid PostRequest request){
         postService.update(id, request);
