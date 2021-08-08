@@ -2,6 +2,7 @@ package com.treeleaf.blog.post;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.treeleaf.blog.comment.Comment;
+import com.treeleaf.blog.image.Image;
 import com.treeleaf.blog.user.User;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -48,4 +50,12 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Comment> comments;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "post_images",
+            joinColumns = @JoinColumn(name = "post_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "image_id", nullable = false, updatable = false)
+    )
+    private Set<Image> images = new HashSet<>();
 }

@@ -19,6 +19,15 @@ public interface PostView {
 
     UserView getUser();
 
+    Set<ImageView> getImages();
+
+    interface ImageView{
+        Long getId();
+
+        @Value("#{target.getUrl()}")
+        String getUrl();
+    }
+
     interface UserView {
 
         Long getId();
