@@ -4,17 +4,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class AuthorizationException extends  RuntimeException{
+public class UserAuthorizationException extends  RuntimeException{
 
-    public AuthorizationException() {
+    public UserAuthorizationException() {
         super();
     }
 
-    public AuthorizationException(String message) {
+    public UserAuthorizationException(String message) {
         super(message);
     }
 
-    public AuthorizationException(String message, Throwable cause) {
+    public UserAuthorizationException(String message, Throwable cause) {
         super(message, cause);
     }
 }

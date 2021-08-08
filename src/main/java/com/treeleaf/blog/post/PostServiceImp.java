@@ -1,6 +1,6 @@
 package com.treeleaf.blog.post;
 
-import com.treeleaf.blog.exception.AuthorizationException;
+import com.treeleaf.blog.exception.UserAuthorizationException;
 import com.treeleaf.blog.exception.InternalServerErrorException;
 import com.treeleaf.blog.exception.ResourceNotFoundException;
 import com.treeleaf.blog.user.User;
@@ -39,7 +39,7 @@ public class PostServiceImp implements  PostService {
     public void delete(Long id) {
         Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
         if(post.getUser().getId() != 1){
-            throw new AuthorizationException("You are not authorized to delete the post.");
+            throw new UserAuthorizationException("You are not authorized to delete the post.");
         }
 
         postRepository.delete(post);
