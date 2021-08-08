@@ -28,30 +28,43 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         }else{
             String authorizationHeader = httpServletRequest.getHeader("Authorization");
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-             //   try {
-                    String token = authorizationHeader.substring("Bearer ".length());
+               try {
+                   String token = authorizationHeader.substring("Bearer ".length());
 
-                    Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                   Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
-                    JWTVerifier verifier = JWT.require(algorithm)
-                            .withIssuer("BLOG POST")
-                            .build();
+                   JWTVerifier verifier = JWT.require(algorithm)
+                           .withIssuer("BLOG POST")
+                           .build();
 
-                    DecodedJWT decodedJWT = verifier.verify(token);
+                   DecodedJWT decodedJWT = verifier.verify(token);
 
-                    String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                System.out.println(roles);
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                   String username = decodedJWT.getSubject();
+                   String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
 
-                    Arrays.stream(roles).forEach(role->{
-                        authorities.add(new SimpleGrantedAuthority(role));
-                    });
+                   Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(username, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    filterChain.doFilter(httpServletRequest, httpServletResponse);
+                   Arrays.stream(roles).forEach(role -> {
+                       authorities.add(new SimpleGrantedAuthority(role));
+                   });
+
+                   UsernamePasswordAuthenticationToken authenticationToken =
+                           new UsernamePasswordAuthenticationToken(username, null, authorities);
+                   SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                   filterChain.doFilter(httpServletRequest, httpServletResponse);
+               }catch (JWTVerificationException e){
+                   Map<String, String> tokens = new HashMap<>();
+                   tokens.put("error", "Invalid token");
+
+                   httpServletResponse.setContentType("application/json");
+                   new ObjectMapper().writeValue(httpServletResponse.getOutputStream(), tokens);
+               }catch(Exception e){
+                   Map<String, String> tokens = new HashMap<>();
+                   tokens.put("error", "Invalid token");
+
+                   httpServletResponse.setContentType("application/json");
+                   new ObjectMapper().writeValue(httpServletResponse.getOutputStream(), tokens);
+               }
             }else{
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
             }

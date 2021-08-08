@@ -44,11 +44,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("images/**").permitAll()
                 .antMatchers("/api/v1/login/**").permitAll()
-                .antMatchers("/api/v1/register").permitAll()
+                .antMatchers("/api/v1/register").permitAll();
 
-        .antMatchers("/api/v1/post/**").permitAll().anyRequest().permitAll();
-
-       // http.authorizeRequests().anyRequest().authenticated();              ;
+        http.authorizeRequests().anyRequest().authenticated();              ;
 
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
