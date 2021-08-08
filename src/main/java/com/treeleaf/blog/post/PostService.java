@@ -1,10 +1,11 @@
 package com.treeleaf.blog.post;
 
+import java.io.IOException;
 import java.util.Map;
 
 public interface PostService {
 
-    public Map<String, Object> getList();
+    public Map<String, Object> getList(int page, int size);
 
     /**
      * Get the post details
@@ -19,7 +20,7 @@ public interface PostService {
      *
      * @param request
      */
-    public void store(PostRequest request);
+    public void store(PostRequest request) throws IOException;
 
     /**
      * Update the post details

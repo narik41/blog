@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +25,8 @@ public class PostServiceImp implements  PostService {
     @Autowired
     UserRepostitory userRepostitory;
 
-    public Map<String, Object> getList(){
-        Pageable paging = PageRequest.of(0,10, Sort.by("id").descending());
+    public Map<String, Object> getList(int page, int size){
+        Pageable paging = PageRequest.of(page,size, Sort.by("id").descending());
         Page<OnlyPost> posts = postRepository.findAllProjectBy(paging);
 
         Map<String, Object> response = new HashMap<>();
@@ -48,7 +47,7 @@ public class PostServiceImp implements  PostService {
     }
 
     @Override
-    public void store(PostRequest request){
+    public void store(PostRequest request)  {
 
         try{
 
@@ -60,6 +59,7 @@ public class PostServiceImp implements  PostService {
             post.setUser(user);
 
             postRepository.save(post);
+
         }catch(Exception e){
             throw new InternalServerErrorException("Internal error. We are working actively to fix the error");
         }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.xml.ws.Response;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -18,11 +19,10 @@ public class PostController {
 
     @GetMapping("/posts")
     public ResponseEntity<Map<String, Object>> index(
-
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size
     ){
-        Map<String, Object> posts = postService.getList();
+        Map<String, Object> posts = postService.getList(page, size);
 
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
@@ -35,7 +35,7 @@ public class PostController {
     }
 
     @PostMapping("post")
-    public ResponseEntity<String> store(@Valid PostRequest request){
+    public ResponseEntity<String> store(@Valid PostRequest request) throws IOException {
         postService.store(request);
 
         return new ResponseEntity("Post stored successfully.", HttpStatus.CREATED);

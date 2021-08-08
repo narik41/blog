@@ -15,9 +15,6 @@ import java.util.Optional;
 @Repository
 public interface PostRepository  extends CrudRepository<Post, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT p.* FROM posts p WHERE id=:id")
-    PostView findDetailsById(Long id);
-
     List<PostView> findAllProjectById(Long id);
 
     Page<OnlyPost> findAllProjectBy(Pageable paging);

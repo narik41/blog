@@ -16,4 +16,5 @@ public class PostRequest {
     @NotBlank(message = "Description is required.")
     private String description ;
 
+    private MultipartFile image ;
 }
