@@ -1,5 +1,8 @@
 package  com.treeleaf.blog.comment;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +13,6 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Optional<Comment> findByIdAndPostId(Long commentId, Long postId);
+
+    Page<CommentView> findAllByPostId(Long postId, Pageable paging);
 }

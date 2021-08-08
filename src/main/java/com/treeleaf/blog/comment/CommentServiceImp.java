@@ -8,7 +8,14 @@ import com.treeleaf.blog.post.PostRepository;
 import com.treeleaf.blog.user.User;
 import com.treeleaf.blog.user.UserRepostitory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommentServiceImp implements  CommentService {
@@ -34,6 +41,20 @@ public class CommentServiceImp implements  CommentService {
                 .orElseThrow(
                         ()->new ResourceNotFoundException("Comment not found.")
                 );
+    }
+
+    @Override
+    public Map<String, Object> getList(Long postId) {
+
+        Pageable paging = PageRequest.of(0,10);
+        Page<CommentView> comments = commentRepository.findAllByPostId(postId, paging);
+        Map<String, Object> response = new HashMap<>();
+        response.put("comments", comments.getContent());
+        response.put("currentPage", comments.getNumber());
+        response.put("totalItems", comments.getTotalElements());
+        response.put("totalPages", comments.getTotalPages());
+
+        return response;
     }
 
     @Override

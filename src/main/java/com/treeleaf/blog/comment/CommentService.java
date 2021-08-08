@@ -1,7 +1,17 @@
 package com.treeleaf.blog.comment;
 
+import java.util.List;
+import java.util.Map;
+
 public interface CommentService {
 
+    /**
+     * Get a list of comment of a post
+     *
+     * @param postId
+     * @return
+     */
+    public Map<String, Object> getList(Long postId);
 
     /**
      * Check if post exists and store the comment details

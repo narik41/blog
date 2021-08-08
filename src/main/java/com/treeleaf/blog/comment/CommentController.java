@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1")
@@ -14,6 +15,16 @@ public class CommentController {
 
     @Autowired
     CommentService commentService;
+
+    @GetMapping("/post/{id}/comments")
+    public ResponseEntity<Map<String, Object>> list(
+            @PathVariable("id") Long postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size
+    ){
+        Map<String, Object> comments = commentService.getList(postId);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
 
     @PostMapping("/post/{id}/comment")
     public ResponseEntity<String> store(@PathVariable("id") Long postId, CommentRequest request){
