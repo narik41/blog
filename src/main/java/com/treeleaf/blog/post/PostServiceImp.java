@@ -1,14 +1,21 @@
 package com.treeleaf.blog.post;
 
+import com.treeleaf.blog.comment.CommentView;
 import com.treeleaf.blog.exception.UserAuthorizationException;
 import com.treeleaf.blog.exception.InternalServerErrorException;
 import com.treeleaf.blog.exception.ResourceNotFoundException;
 import com.treeleaf.blog.user.User;
 import com.treeleaf.blog.user.UserRepostitory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PostServiceImp implements  PostService {
@@ -19,13 +26,25 @@ public class PostServiceImp implements  PostService {
     @Autowired
     UserRepostitory userRepostitory;
 
+    public Map<String, Object> getList(){
+        Pageable paging = PageRequest.of(0,10, Sort.by("id").descending());
+        Page<OnlyPost> posts = postRepository.findAllProjectBy(paging);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("posts", posts.getContent());
+        response.put("currentPage", posts.getNumber());
+        response.put("totalItems", posts.getTotalElements());
+        response.put("totalPages", posts.getTotalPages());
+
+        return response;
+    }
+
     @Override
     public PostView getPostDetails(Long id) {
-       // List<PostView> posts = postRepository.getById(id);
-        //return posts.stream().findFirst().get();
+
         List<PostView> posts = postRepository.findAllProjectById(id);
         return posts.stream().findFirst().get();
-       //return postRepository.findDetailsById(id);
+
     }
 
     @Override

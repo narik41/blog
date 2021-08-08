@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.xml.ws.Response;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/")
@@ -14,6 +15,17 @@ public class PostController {
 
     @Autowired
     PostService postService;
+
+    @GetMapping("/posts")
+    public ResponseEntity<Map<String, Object>> index(
+
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size
+    ){
+        Map<String, Object> posts = postService.getList();
+
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 
     @GetMapping("/post/{id}")
     public ResponseEntity<PostView> view(@PathVariable("id") Long id){

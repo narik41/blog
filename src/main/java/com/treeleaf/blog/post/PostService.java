@@ -1,6 +1,10 @@
 package com.treeleaf.blog.post;
 
+import java.util.Map;
+
 public interface PostService {
+
+    public Map<String, Object> getList();
 
     /**
      * Get the post details
