@@ -1,13 +1,21 @@
-package com.treeleaf.blog.comment;
+package com.treeleaf.blog.post;
 
+import com.treeleaf.blog.comment.CommentView;
 import com.treeleaf.blog.user.User;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface CommentView {
+import java.util.List;
+import java.util.Set;
+
+public interface PostView {
 
     Long getId();
 
-    String getComment();
+    String getTitle();
+
+    String getDescription();
+
+    List<CommentView> getComments();
 
     UserView getUser();
 
@@ -18,5 +26,4 @@ public interface CommentView {
         @Value("#{target.profile.firstName+' '+target.profile.lastName}")
         String getFullName();
     }
-
 }

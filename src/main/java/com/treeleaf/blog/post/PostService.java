@@ -8,7 +8,7 @@ public interface PostService {
      * @param id
      * @return
      */
-    public Post getPostDetails(Long id);
+    public PostView getPostDetails(Long id);
 
     /**
      * Store the details of post

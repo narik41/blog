@@ -8,6 +8,8 @@ import com.treeleaf.blog.user.UserRepostitory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PostServiceImp implements  PostService {
 
@@ -18,8 +20,12 @@ public class PostServiceImp implements  PostService {
     UserRepostitory userRepostitory;
 
     @Override
-    public Post getPostDetails(Long id) {
-        return postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
+    public PostView getPostDetails(Long id) {
+       // List<PostView> posts = postRepository.getById(id);
+        //return posts.stream().findFirst().get();
+        List<PostView> posts = postRepository.findAllProjectById(id);
+        return posts.stream().findFirst().get();
+       //return postRepository.findDetailsById(id);
     }
 
     @Override

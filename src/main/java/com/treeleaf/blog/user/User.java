@@ -1,14 +1,18 @@
 package com.treeleaf.blog.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.treeleaf.blog.userprofile.UserProfile;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -32,5 +36,6 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private UserProfile profile;
 }
