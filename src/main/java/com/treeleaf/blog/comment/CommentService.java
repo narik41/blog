@@ -11,7 +11,7 @@ public interface CommentService {
      * @param postId
      * @return
      */
-    public Map<String, Object> getList(Long postId);
+    public Map<String, Object> getList(Long postId, int pageNumber, int size);
 
     /**
      * Check if post exists and store the comment details

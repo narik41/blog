@@ -20,6 +20,9 @@ public class UserServiceImp implements  UserService, UserDetailsService {
     @Autowired
     private UserRepostitory userRepostitory;
 
+    @Autowired
+    private LoggedinUser loggedinUser;
+
     @Override
     public UserDetails loadUserByUsername(String username){
         User user = userRepostitory.findByEmail(username);
@@ -35,10 +38,9 @@ public class UserServiceImp implements  UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 
-
     @Override
     public ProfileView profile() {
-        String email = LoggedinUser.getUsername();
+        String email = loggedinUser.username();
         return  userRepostitory.findAllProjectedByEmail(email);
     }
 }

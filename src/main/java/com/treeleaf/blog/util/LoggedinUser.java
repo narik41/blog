@@ -1,16 +1,29 @@
 package com.treeleaf.blog.util;
 
+import com.treeleaf.blog.user.User;
+import com.treeleaf.blog.user.UserRepostitory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
+@Component
 public class LoggedinUser {
 
-    public static String getUsername(){
+    @Autowired
+    UserRepostitory userRepostitory;
+
+    /**
+     * Get the currenlty logged in user name
+     * @return
+     */
+    public String username(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
+    }
 
+    public User details(){
+        String email = this.username();
+        return  userRepostitory.findByEmail(email);
     }
 }

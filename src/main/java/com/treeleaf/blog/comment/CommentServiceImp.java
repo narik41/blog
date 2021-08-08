@@ -7,6 +7,7 @@ import com.treeleaf.blog.post.Post;
 import com.treeleaf.blog.post.PostRepository;
 import com.treeleaf.blog.user.User;
 import com.treeleaf.blog.user.UserRepostitory;
+import com.treeleaf.blog.util.LoggedinUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,9 @@ public class CommentServiceImp implements  CommentService {
     @Autowired
     UserRepostitory userRepostitory;
 
+    @Autowired
+    LoggedinUser loggedinUser;
+
     /**
      * Get by a comment by id and post id
      *
@@ -44,9 +48,9 @@ public class CommentServiceImp implements  CommentService {
     }
 
     @Override
-    public Map<String, Object> getList(Long postId) {
+    public Map<String, Object> getList(Long postId, int pageNumber, int size) {
 
-        Pageable paging = PageRequest.of(0,10);
+        Pageable paging = PageRequest.of(pageNumber,size);
         Page<CommentView> comments = commentRepository.findAllByPostId(postId, paging);
         Map<String, Object> response = new HashMap<>();
         response.put("comments", comments.getContent());
@@ -59,15 +63,14 @@ public class CommentServiceImp implements  CommentService {
 
     @Override
     public void store(Long postId, CommentRequest request){
-        User user = userRepostitory.findById(1L).orElseThrow(()->new ResourceNotFoundException("user not found"));
+        User currentLoggedInUser = loggedinUser.details();
         Post post = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post not found"));
 
         try{
-
             Comment comment = new Comment() ;
             comment.setComment(request.getComment());
             comment.setPost(post);
-            comment.setUser(user);
+            comment.setUser(currentLoggedInUser);
 
             commentRepository.save(comment);
         }catch(Exception e){
@@ -77,8 +80,9 @@ public class CommentServiceImp implements  CommentService {
 
     @Override
     public void update(Long commentId, Long postId, CommentRequest request) {
+        User currentLoggedInUser = loggedinUser.details();
         Comment comment = findByIdAndPostId(commentId, postId);
-        if(comment.getUser().getId() != 1){
+        if(comment.getUser().getId() != currentLoggedInUser.getId()){
             throw new UserAuthorizationException("You are not authorized to update the comment.");
         }
 
@@ -92,8 +96,9 @@ public class CommentServiceImp implements  CommentService {
 
     @Override
     public void delete(Long commentId, Long postId) {
+        User currentLoggedInUser = loggedinUser.details();
         Comment comment = findByIdAndPostId(commentId, postId);
-        if(comment.getUser().getId() != 1){
+        if(comment.getUser().getId() != currentLoggedInUser.getId()){
             throw new UserAuthorizationException("You are not authorized to update the comment.");
         }
 

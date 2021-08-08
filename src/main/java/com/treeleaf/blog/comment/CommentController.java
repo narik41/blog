@@ -20,7 +20,7 @@ public class CommentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size
     ){
-        Map<String, Object> comments = commentService.getList(postId);
+        Map<String, Object> comments = commentService.getList(postId, page, size);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 

@@ -8,6 +8,7 @@ import com.treeleaf.blog.image.Image;
 import com.treeleaf.blog.image.ImageRepository;
 import com.treeleaf.blog.user.User;
 import com.treeleaf.blog.user.UserRepostitory;
+import com.treeleaf.blog.util.LoggedinUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,9 @@ public class PostServiceImp implements  PostService {
 
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    LoggedinUser loggedinUser;
 
     @Autowired
     FileSystemStorageService fileSystemStorage;
@@ -90,13 +94,13 @@ public class PostServiceImp implements  PostService {
             image.setPath(filePath.getURI().toString());
             image = imageRepository.save(image);
 
-            User user = userRepostitory.findById(1L).orElseThrow(()->new RuntimeException("user not found"));
+            User currentLoggedInUser = loggedinUser.details();
 
             // save post
             Post post = new Post();
             post.setTitle(request.getTitle());
             post.setDescription(request.getDescription());
-            post.setUser(user);
+            post.setUser(currentLoggedInUser);
             post.getImages().add(image);
 
             postRepository.save(post);
@@ -115,8 +119,9 @@ public class PostServiceImp implements  PostService {
     public void update(Long id, PostRequest request) {
 
         // get the post
+        User currentLoggedInUser = loggedinUser.details();
         Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
-        if(post.getUser().getId() != 1){
+        if(post.getUser().getId() != currentLoggedInUser.getId()){
             throw new UserAuthorizationException("You are not authorized to delete the post.");
         }
 
@@ -168,8 +173,9 @@ public class PostServiceImp implements  PostService {
 
     @Override
     public void delete(Long id) {
+        User currentLoggedInUser = loggedinUser.details();
         Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
-        if(post.getUser().getId() != 1){
+        if(post.getUser().getId() != currentLoggedInUser.getId()){
             throw new UserAuthorizationException("You are not authorized to delete the post.");
         }
         Set<Image> storedImages = post.getImages();
