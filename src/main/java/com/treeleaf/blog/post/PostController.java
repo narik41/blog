@@ -21,6 +21,12 @@ public class PostController {
 
         return new ResponseEntity("Post stored successfully.", HttpStatus.CREATED);
     }
+    @PutMapping("/post/{id}")
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @Valid PostRequest request){
+        postService.update(id, request);
+
+        return new ResponseEntity("Post updated successfully.", HttpStatus.CREATED);
+    }
 
     @DeleteMapping("/post/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id){

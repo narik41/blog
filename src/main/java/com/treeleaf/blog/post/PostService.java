@@ -10,6 +10,14 @@ public interface PostService {
     public void store(PostRequest request);
 
     /**
+     * Update the post details
+     *
+     * @param id
+     * @param request
+     */
+    public void update(Long id, PostRequest request);
+
+    /**
      * Remove the post details
      *
      * @param id

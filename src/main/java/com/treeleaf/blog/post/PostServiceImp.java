@@ -36,6 +36,24 @@ public class PostServiceImp implements  PostService {
     }
 
     @Override
+    public void update(Long id, PostRequest request) {
+
+        Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
+        if(post.getUser().getId() != 1){
+            throw new UserAuthorizationException("You are not authorized to delete the post.");
+        }
+
+        try{
+            post.setTitle(request.getTitle());
+            post.setDescription(request.getDescription());
+
+            postRepository.save(post);
+        }catch(Exception e){
+            throw new InternalServerErrorException("Internal error. We are working actively to fix the error");
+        }
+    }
+
+    @Override
     public void delete(Long id) {
         Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
         if(post.getUser().getId() != 1){
