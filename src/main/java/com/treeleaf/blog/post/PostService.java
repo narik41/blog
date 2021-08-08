@@ -8,4 +8,11 @@ public interface PostService {
      * @param request
      */
     public void store(PostRequest request);
+
+    /**
+     * Remove the post details
+     *
+     * @param id
+     */
+    public void delete(Long id);
 }

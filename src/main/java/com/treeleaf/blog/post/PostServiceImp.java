@@ -1,6 +1,8 @@
 package com.treeleaf.blog.post;
 
+import com.treeleaf.blog.exception.AuthorizationException;
 import com.treeleaf.blog.exception.InternalServerErrorException;
+import com.treeleaf.blog.exception.ResourceNotFoundException;
 import com.treeleaf.blog.user.User;
 import com.treeleaf.blog.user.UserRepostitory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,7 @@ public class PostServiceImp implements  PostService {
     @Autowired
     UserRepostitory userRepostitory;
 
-    /**
-     * Store the details of post
-     *
-     * @param request
-     */
+    @Override
     public void store(PostRequest request){
 
         try{
@@ -35,6 +33,17 @@ public class PostServiceImp implements  PostService {
         }catch(Exception e){
             throw new InternalServerErrorException("Internal error. We are working actively to fix the error");
         }
-
     }
+
+    @Override
+    public void delete(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post not found."));
+        if(post.getUser().getId() != 1){
+            throw new AuthorizationException("You are not authorized to delete the post.");
+        }
+
+        postRepository.delete(post);
+    }
+
+
 }
