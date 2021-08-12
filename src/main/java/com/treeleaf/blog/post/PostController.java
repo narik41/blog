@@ -1,6 +1,7 @@
 package com.treeleaf.blog.post;
 
 import com.treeleaf.blog.common.APIResponse;
+import com.treeleaf.blog.common.APIRoutes;
 import com.treeleaf.blog.util.Meta;
 import com.treeleaf.blog.util.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/")
 public class PostController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class PostController {
     @Autowired
     Translator translator;
 
-    @GetMapping("/posts")
+    @GetMapping(APIRoutes.POST.GET_POSTS)
     public ResponseEntity<APIResponse> index(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size
@@ -47,7 +47,7 @@ public class PostController {
         return new ResponseEntity<APIResponse>(apiResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/post/{id}")
+    @GetMapping(APIRoutes.POST.SINGLE_POST)
     public ResponseEntity<APIResponse> view(@PathVariable("id") Long id){
         PostView post = postService.getPostDetails(id);
 
@@ -59,7 +59,7 @@ public class PostController {
         return new ResponseEntity(apiResponse, HttpStatus.OK);
     }
 
-    @PostMapping("post")
+    @PostMapping(APIRoutes.POST.STORE_POST)
     public ResponseEntity<APIResponse> store(@Valid PostRequest request) throws IOException {
         postService.store(request);
 
@@ -70,7 +70,7 @@ public class PostController {
         return new ResponseEntity(apiResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("/post/{id}")
+    @PutMapping(APIRoutes.POST.SINGLE_POST)
     public ResponseEntity<APIResponse> update(@PathVariable("id") Long id, @Valid PostRequest request){
         postService.update(id, request);
 
@@ -81,7 +81,7 @@ public class PostController {
         return new ResponseEntity(apiResponse, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping(APIRoutes.POST.SINGLE_POST)
     public ResponseEntity<APIResponse> delete(@PathVariable("id") Long id){
         postService.delete(id);
 

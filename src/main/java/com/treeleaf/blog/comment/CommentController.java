@@ -1,6 +1,7 @@
 package  com.treeleaf.blog.comment;
 
 import com.treeleaf.blog.common.APIResponse;
+import com.treeleaf.blog.common.APIRoutes;
 import com.treeleaf.blog.util.Meta;
 import com.treeleaf.blog.util.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CommentController {
     @Autowired
     Translator translator;
 
-    @GetMapping("/post/{id}/comments")
+    @GetMapping(APIRoutes.COMMENT.GET_COMMENTS)
     public ResponseEntity<APIResponse> list(
             @PathVariable("id") Long postId,
             @RequestParam(defaultValue = "0") int page,
@@ -43,7 +44,7 @@ public class CommentController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/post/{id}/comment")
+    @PostMapping(APIRoutes.COMMENT.STORE_COMMENTS)
     public ResponseEntity<APIResponse> store(@PathVariable("id") Long postId, CommentRequest request){
         commentService.store(postId, request);
 
@@ -54,7 +55,7 @@ public class CommentController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("/post/{postId}/comment/{id}")
+    @PutMapping(APIRoutes.COMMENT.SINGLE_COMMENTS)
     public ResponseEntity<APIResponse> update(
             @PathVariable("postId") Long postId,
             @PathVariable("id") Long commentId,
@@ -69,7 +70,7 @@ public class CommentController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/post/{postId}/comment/{id}")
+    @DeleteMapping(APIRoutes.COMMENT.SINGLE_COMMENTS)
     public ResponseEntity<APIResponse> delete(@PathVariable("postId") Long postId, @PathVariable("id") Long commentId){
         commentService.delete( commentId, postId);
 
