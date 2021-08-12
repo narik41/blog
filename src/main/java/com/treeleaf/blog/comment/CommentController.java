@@ -1,6 +1,10 @@
 package  com.treeleaf.blog.comment;
 
+import com.treeleaf.blog.common.APIResponse;
+import com.treeleaf.blog.util.Meta;
+import com.treeleaf.blog.util.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,38 +18,65 @@ public class CommentController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    Translator translator;
+
     @GetMapping("/post/{id}/comments")
-    public ResponseEntity<Map<String, Object>> list(
+    public ResponseEntity<APIResponse> list(
             @PathVariable("id") Long postId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size
     ){
-        Map<String, Object> comments = commentService.getList(postId, page, size);
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        Page<CommentView> comments = commentService.getList(postId, page, size);
+
+        Meta meta = new Meta();
+        meta.setCurrentPage(comments.getNumber());
+        meta.setTotalItems(comments.getTotalElements());
+        meta.setTotalPages(comments.getTotalPages());
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.OK.value());
+        apiResponse.setData(comments.getContent());
+        apiResponse.setMessage(translator.toLocale("success_comment_list"));
+        apiResponse.setMeta(meta);
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @PostMapping("/post/{id}/comment")
-    public ResponseEntity<String> store(@PathVariable("id") Long postId, CommentRequest request){
+    public ResponseEntity<APIResponse> store(@PathVariable("id") Long postId, CommentRequest request){
         commentService.store(postId, request);
 
-        return new ResponseEntity<>("Comment added to post successfully", HttpStatus.CREATED);
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_comment_added"));
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/post/{postId}/comment/{id}")
-    public ResponseEntity<String> update(
+    public ResponseEntity<APIResponse> update(
             @PathVariable("postId") Long postId,
             @PathVariable("id") Long commentId,
             CommentRequest request
     ){
         commentService.update(commentId, postId, request);
 
-        return new ResponseEntity<>("Comment updated successfully.", HttpStatus.OK);
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_comment_updated"));
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/post/{postId}/comment/{id}")
-    public ResponseEntity<String> delete(@PathVariable("postId") Long postId, @PathVariable("id") Long commentId){
+    public ResponseEntity<APIResponse> delete(@PathVariable("postId") Long postId, @PathVariable("id") Long commentId){
         commentService.delete( commentId, postId);
 
-        return new ResponseEntity<>("Comment deleted successfully.", HttpStatus.OK);
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_comment_deleted"));
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }

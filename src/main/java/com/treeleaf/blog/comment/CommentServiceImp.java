@@ -48,17 +48,17 @@ public class CommentServiceImp implements  CommentService {
     }
 
     @Override
-    public Map<String, Object> getList(Long postId, int pageNumber, int size) {
+    public Page<CommentView> getList(Long postId, int pageNumber, int size) {
 
         Pageable paging = PageRequest.of(pageNumber,size);
         Page<CommentView> comments = commentRepository.findAllByPostId(postId, paging);
-        Map<String, Object> response = new HashMap<>();
+       /* Map<String, Object> response = new HashMap<>();
         response.put("comments", comments.getContent());
         response.put("currentPage", comments.getNumber());
         response.put("totalItems", comments.getTotalElements());
         response.put("totalPages", comments.getTotalPages());
-
-        return response;
+*/
+        return comments;
     }
 
     @Override
