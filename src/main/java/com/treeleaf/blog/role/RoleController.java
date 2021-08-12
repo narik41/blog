@@ -1,5 +1,8 @@
 package com.treeleaf.blog.role;
 
+import com.treeleaf.blog.common.APIResponse;
+import com.treeleaf.blog.common.APIRoutes;
+import com.treeleaf.blog.util.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,36 +14,56 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
 public class RoleController {
 
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/roles")
-    public ResponseEntity<List<Role>> getRoles(){
-        return new ResponseEntity<>(roleService.getList(), HttpStatus.OK);
+    @Autowired
+    Translator translator;
+
+    @GetMapping(APIRoutes.ROLE.GET_ROLES)
+    public ResponseEntity<APIResponse> getRoles(){
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_role_list"));
+        apiResponse.setData(roleService.getList());
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/role")
-    public ResponseEntity<String> store(@Valid RoleRequest request) {
+    @PostMapping(APIRoutes.ROLE.STORE_ROLE)
+    public ResponseEntity<APIResponse> store(@Valid RoleRequest request) {
 
         roleService.store(request);
 
-        return new ResponseEntity("Role stored successfully.", HttpStatus.CREATED);
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_role_added"));
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity(apiResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("/role/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") Long id, @Valid RoleRequest request){
+    @PutMapping(APIRoutes.ROLE.SINGLE_ROLE)
+    public ResponseEntity<APIResponse> update(@PathVariable("id") Long id, @Valid RoleRequest request){
         roleService.update(id, request);
 
-        return new ResponseEntity("Role updated successfully.", HttpStatus.CREATED);
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_role_updated"));
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity(apiResponse, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/role/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id){
+    @DeleteMapping(APIRoutes.ROLE.SINGLE_ROLE)
+    public ResponseEntity<APIResponse> delete(@PathVariable("id") Long id){
         roleService.delete(id);
 
-        return new ResponseEntity("Role deleted successfully.", HttpStatus.OK);
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_role_deleted"));
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity(apiResponse, HttpStatus.OK);
     }
 }
