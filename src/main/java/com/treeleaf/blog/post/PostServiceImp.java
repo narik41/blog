@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -48,17 +49,17 @@ public class PostServiceImp implements  PostService {
     @Autowired
     FileSystemStorageService fileSystemStorage;
 
-    public Map<String, Object> getList(int page, int size){
+    public Page<OnlyPost> getList(int page, int size){
         Pageable paging = PageRequest.of(page,size, Sort.by("id").descending());
         Page<OnlyPost> posts = postRepository.findAllProjectBy(paging);
 
-        Map<String, Object> response = new HashMap<>();
+       /* Map<String, Object> response = new HashMap<>();
         response.put("posts", posts.getContent());
         response.put("currentPage", posts.getNumber());
         response.put("totalItems", posts.getTotalElements());
         response.put("totalPages", posts.getTotalPages());
-
-        return response;
+*/
+        return posts;
     }
 
     @Override

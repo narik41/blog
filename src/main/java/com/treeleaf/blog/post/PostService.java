@@ -1,11 +1,13 @@
 package com.treeleaf.blog.post;
 
+import org.springframework.data.domain.Page;
+
 import java.io.IOException;
 import java.util.Map;
 
 public interface PostService {
 
-    public Map<String, Object> getList(int page, int size);
+    public Page<OnlyPost> getList(int page, int size);
 
     /**
      * Get the post details

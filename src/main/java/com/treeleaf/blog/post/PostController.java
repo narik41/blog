@@ -1,7 +1,12 @@
 package com.treeleaf.blog.post;
 
+import com.treeleaf.blog.common.APIResponse;
+import com.treeleaf.blog.util.Meta;
+import com.treeleaf.blog.util.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,37 +23,72 @@ public class PostController {
     @Autowired
     PostService postService;
 
+    @Autowired
+    Translator translator;
+
     @GetMapping("/posts")
-    public ResponseEntity<Map<String, Object>> index(
+    public ResponseEntity<APIResponse> index(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size
-    ) throws IOException {
-        Map<String, Object> posts = postService.getList(page, size);
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+    ){
+        Page<OnlyPost> posts = postService.getList(page, size);
+
+        Meta meta = new Meta();
+        meta.setCurrentPage(posts.getNumber());
+        meta.setTotalItems(posts.getTotalElements());
+        meta.setTotalPages(posts.getTotalPages());
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(HttpStatus.OK.value());
+        apiResponse.setData(posts.getContent());
+        apiResponse.setMessage(translator.toLocale("success_post_list"));
+        apiResponse.setMeta(meta);
+
+        return new ResponseEntity<APIResponse>(apiResponse, HttpStatus.OK);
     }
 
     @GetMapping("/post/{id}")
-    public ResponseEntity<PostView> view(@PathVariable("id") Long id){
+    public ResponseEntity<APIResponse> view(@PathVariable("id") Long id){
         PostView post = postService.getPostDetails(id);
-        return new ResponseEntity(post, HttpStatus.OK);
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_post_detail"));
+        apiResponse.setData(post);
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity(apiResponse, HttpStatus.OK);
     }
 
     @PostMapping("post")
-    public ResponseEntity<String> store(@Valid PostRequest request) throws IOException {
+    public ResponseEntity<APIResponse> store(@Valid PostRequest request) throws IOException {
         postService.store(request);
-        return new ResponseEntity("Post stored successfully.", HttpStatus.CREATED);
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_post_created"));
+        apiResponse.setStatus(HttpStatus.CREATED.value());
+
+        return new ResponseEntity(apiResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/post/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") Long id, @Valid PostRequest request){
+    public ResponseEntity<APIResponse> update(@PathVariable("id") Long id, @Valid PostRequest request){
         postService.update(id, request);
-        return new ResponseEntity("Post updated successfully.", HttpStatus.CREATED);
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_post_updated"));
+        apiResponse.setStatus(HttpStatus.CREATED.value());
+
+        return new ResponseEntity(apiResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id){
+    public ResponseEntity<APIResponse> delete(@PathVariable("id") Long id){
         postService.delete(id);
-        return new ResponseEntity("Post deleted successfully.", HttpStatus.OK);
-    }
 
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(translator.toLocale("success_post_deleted"));
+        apiResponse.setStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity(apiResponse, HttpStatus.OK);
+    }
 }
