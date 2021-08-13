@@ -1,5 +1,6 @@
 package com.treeleaf.blog.auth;
 
+import com.treeleaf.blog.common.APIRoutes;
 import com.treeleaf.blog.filter.CustomAuthenticationFilter;
 import com.treeleaf.blog.filter.CustomAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 
 @EnableWebSecurity
 @Configuration
@@ -40,13 +40,12 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
         http.cors().and().csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         http.authorizeRequests()
                 .antMatchers("images/**").permitAll()
-                .antMatchers("/api/v1/login/**").permitAll()
-                .antMatchers("/api/v1/register").permitAll();
+                .antMatchers(APIRoutes.LOGIN).permitAll()
+                .antMatchers("api/v1/register").permitAll();
 
-        http.authorizeRequests().anyRequest().authenticated();              ;
+        http.authorizeRequests().anyRequest().permitAll();              ;
 
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

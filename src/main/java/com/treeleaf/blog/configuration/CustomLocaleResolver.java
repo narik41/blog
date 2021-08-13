@@ -19,7 +19,7 @@ public class CustomLocaleResolver extends AcceptHeaderLocaleResolver implements 
 
     List<Locale> LOCALES = Arrays.asList(
             new Locale("en"),
-            new Locale("fr")
+            new Locale("np")
     );
 
     public Locale resolveLocale(HttpServletRequest request){
